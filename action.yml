@@ -24,7 +24,7 @@ runs:
   steps:
     - id: generate
       shell: bash
-      run: bash releasenote-gen.sh "${{ inputs.version }}" "${{ inputs.changelog }}" "${{ inputs.releasenotes }}"
+      run: releasenote-gen.sh "${{ inputs.version }}" "${{ inputs.changelog }}" "${{ inputs.releasenotes }}"
 
     - id: read
       shell: bash
