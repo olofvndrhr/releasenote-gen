@@ -24,12 +24,7 @@ runs:
   steps:
     - id: generate
       shell: bash
-      run: >
-      bash releasenote-gen.sh
-      "${{ inputs.version }}"
-      "${{ inputs.changelog }}"
-      "${{ inputs.releasenotes }}"
-      >> ${GITHUB_OUTPUT}
+      run: bash releasenote-gen.sh "${{ inputs.version }}" "${{ inputs.changelog }}" "${{ inputs.releasenotes }}" >> ${GITHUB_OUTPUT}
 
     - id: read
       shell: bash
