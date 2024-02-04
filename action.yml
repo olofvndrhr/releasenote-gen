@@ -1,0 +1,36 @@
+name: "releasenote generator"
+description: "bash releasenote generator for keepachangelog format"
+inputs:
+  version:
+    description: "version to get from changelog"
+    required: true
+    default: "latest"
+  changelog:
+    description: "changelog file"
+    required: true
+    default: "CHANGELOG.md"
+  releasenotes:
+    description: "release notes file"
+    required: true
+    default: "RELEASENOTES.md"
+
+outputs:
+  releasenotes:
+    description: "release notes as a string"
+    value: ${{ steps.read.outputs.releasenotes }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: generate
+      shell: bash
+      run: >
+      bash releasenote-gen.sh
+      "${{ inputs.version }}"
+      "${{ inputs.changelog }}"
+      "${{ inputs.releasenotes }}"
+      >> ${GITHUB_OUTPUT}
+
+    - id: read
+      shell: bash
+      run: echo "releasenotes="$(< ${{ inputs.releasenotes }})"" >> ${GITHUB_OUTPUT}
