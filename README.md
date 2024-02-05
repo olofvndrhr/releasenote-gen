@@ -80,6 +80,7 @@ jobs:
         run: >-
           auto-changelog -t keepachangelog
           --commit-limit 50 --backfill-limit 50
+          --ignore-commit-pattern '[Bb]ump version|[Uu]pdate changelog|[Mm]erge pull request'      
 
       - name: get release notes
         uses: olofvndrhr/releasenote-gen@v1
