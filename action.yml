@@ -22,10 +22,12 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - id: generate
+    - name: generate release notes
+      id: generate
       shell: bash
       run: bash ${{ github.action_path }}/releasenote-gen.sh "${{ inputs.version }}" "${{ inputs.changelog }}" "${{ inputs.releasenotes }}"
 
-    - id: read
+    - name: set output
+      id: read
       shell: bash
-      run: cat <<< "releasenotes="$(< ${{ inputs.releasenotes }})"" >> ${GITHUB_OUTPUT}
+      run: echo 'releasenotes << EOF' >> ${GITHUB_OUTPUT}; cat "${{ inputs.releasenotes }}" >> ${GITHUB_OUTPUT}; echo 'EOF' >> ${GITHUB_OUTPUT}
