@@ -4,7 +4,7 @@ set -euo pipefail
 
 TAG="${1}"
 
-if ! [[ "${TAG}" =~ \d+\.\d+\.\d+ ]]; then
+if ! [[ "${TAG}" =~ v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then
     echo "invalid tag"
     exit 1
 fi
