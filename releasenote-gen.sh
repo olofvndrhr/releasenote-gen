@@ -18,7 +18,7 @@ function show_help() {
     \$3 -> release notes file. default: '$RELEASENOTES_FILE'
 
     usage:
-        ./get_release_notes.sh <new_version>
+        ./get_release_notes.sh <version> <changelog file> <release notes file>
 
 
     example:
@@ -30,28 +30,51 @@ EOF
     exit 0
 }
 
-# create changelog for release
-function get_release_notes() {
-    local matched_ver="${1}"
-
-    if [[ -z "${VERSION}" ]]; then
-        show_help
-    fi
-
-    echo "-> creating release-notes"
+get_version() {
+    local matched_ver
 
     if [[ "${VERSION,,}" == "latest" ]]; then
-        matched_ver="$(grep -o -E "^##\s+\[[vV]?[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\](\(.*\))?" "${CHANGELOG_FILE}" | head -n 1 | cut -d ' ' -f 2)"
+        matched_ver="$(grep -o -E "^##\s+\[?[vV]?[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\]?(\(.*\))?" "${CHANGELOG_FILE}" | head -n 1 | cut -d ' ' -f 2)"
     else
-        matched_ver="$(grep -o -E "^##\s+\[[vV]?${matched_ver}\](\(.*\))?" "${CHANGELOG_FILE}" | head -n 1 | cut -d ' ' -f 2)"
+        matched_ver="$(grep -o -E "^##\s+\[?[vV]?${VERSION}\]?(\(.*\))?" "${CHANGELOG_FILE}" | head -n 1 | cut -d ' ' -f 2)"
     fi
+
+    echo -n "${matched_ver}"
+}
+
+# create changelog for release
+get_release_notes() {
+    local matched_ver releasenotes
+
+    echo "-> getting release-notes from: ${CHANGELOG_FILE}"
+
+    matched_ver="$(get_version)"
     echo "+ matched line: ${matched_ver}"
 
-    awk -v ver="${matched_ver}" \
-        '/^##\s+/ { if (p) { exit }; if ($2 == ver) { p=1 } } p && NF' \
-        "${CHANGELOG_FILE}" | tee "${RELEASENOTES_FILE}"
+    releasenotes="$(
+        awk -v ver="${matched_ver}" \
+            '/^##\s+/ { if (p) { exit }; if ($2 == ver) { p=1 } } p && NF' \
+            "${CHANGELOG_FILE}"
+    )"
+    show_release_notes "${releasenotes}"
 
-    echo "+ done"
+    echo "--> writing release notes to: ${RELEASENOTES_FILE}"
+    echo "${releasenotes}" > "${RELEASENOTES_FILE}"
+
+    echo -e "+ done"
+}
+
+show_release_notes() {
+    local releasenotes="${1}"
+    cat << EOF
+
+----- begin release notes -----
+
+${releasenotes}
+
+----- end release notes -----
+
+EOF
 }
 
 # check options
@@ -60,6 +83,6 @@ case "${1}" in
         show_help
         ;;
     *)
-        get_release_notes "${@}"
+        get_release_notes
         ;;
 esac
