@@ -89,6 +89,7 @@ jobs:
           changelog: CHANGELOG.md # default
           releasenotes: RELEASENOTES.md # default
 
+      # don't forget to include RELEASENOTES.md in your .gitignore
       - name: commit changes
         uses: EndBug/add-and-commit@v9
         with:
