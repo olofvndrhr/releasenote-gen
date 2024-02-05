@@ -30,7 +30,7 @@ jobs:
       - name: create github release
         uses: softprops/action-gh-release@v1
         with:
-          title: ${{ gitea.ref_name }}
+          title: ${{ github.ref_name }}
           body_path: RELEASENOTES.md
 
       - name: commit changes
