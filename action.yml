@@ -17,17 +17,17 @@ inputs:
 outputs:
   releasenotes:
     description: "release notes as a string"
-    value: ${{ steps.read.outputs.releasenotes }}
+    value: ${{ steps.read.outputs.content }}
 
 runs:
   using: "composite"
   steps:
     - name: generate release notes
-      id: generate
       shell: bash
       run: bash ${{ github.action_path }}/releasenote-gen.sh "${{ inputs.version }}" "${{ inputs.changelog }}" "${{ inputs.releasenotes }}"
 
-    - name: set output
+    - name: read release notes
       id: read
-      shell: bash
-      run: IFS= echo "$(< "${{ inputs.releasenotes }}")" >> ${GITHUB_OUTPUT}
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: "${{ inputs.releasenotes }}"
