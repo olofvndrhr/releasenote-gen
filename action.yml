@@ -28,4 +28,4 @@ runs:
 
     - id: read
       shell: bash
-      run: echo "releasenotes="$(< ${{ inputs.releasenotes }})"" >> ${GITHUB_OUTPUT}
+      run: cat <<< "releasenotes="$(< ${{ inputs.releasenotes }})"" >> ${GITHUB_OUTPUT}
