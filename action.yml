@@ -30,4 +30,4 @@ runs:
     - name: set output
       id: read
       shell: bash
-      run: echo 'releasenotes << EOF' >> ${GITHUB_OUTPUT}; cat <<< "$(< "${{ inputs.releasenotes }}")" >> ${GITHUB_OUTPUT}; echo 'EOF' >> ${GITHUB_OUTPUT}
+      run: IFS= echo "$(< "${{ inputs.releasenotes }}")" >> ${GITHUB_OUTPUT}
